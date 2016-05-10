@@ -1,0 +1,235 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
+<link rel="import" href="../iron-input/iron-input.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="../paper-input/all-imports.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+
+<link rel="import" href="../jv-datepicker/jv-datepicker-dialog.html">
+<link rel="import" href="../jv-datepicker/datepicker-slide-from-bottom-animation.html">
+<link rel="import" href="../jv-datepicker/datepicker-slide-from-top-animation.html">
+
+<link rel="import" href="./paper-datepicker-input-behavior.html">
+
+<!--
+`paper-split-date-input` puts together three numerical `paper-input`s and a
+jv-datepicker synced together to provide a seamless date input experience.
+
+Quite a lot of this code was ripped off directly from `paper-input`, and the
+element itself should also behave like one.
+
+To get/set the date, use the `date` property. Depends on momentjs.
+
+@demo demo/demo-split.html
+@element paper-split-date-input
+-->
+<dom-module id="paper-split-date-input">
+  <template>
+    <style include="iron-flex">
+      :host {
+        display: block;
+      }
+
+      input::-webkit-input-placeholder {
+        color: var(--paper-input-container-color, --secondary-text-color);
+      }
+      input:-moz-placeholder {
+        color: var(--paper-input-container-color, --secondary-text-color);
+      }
+      input::-moz-placeholder {
+        color: var(--paper-input-container-color, --secondary-text-color);
+      }
+      input:-ms-input-placeholder {
+        color: var(--paper-input-container-color, --secondary-text-color);
+      }
+
+      .input-group {
+        @apply(--layout-horizontal);
+      }
+      .input-group > .f1 {
+        @apply(--layout-flex);
+      }
+      .input-group >.f2 {
+        @apply(--layout-flex-2);
+      }
+      .input-group > input {
+        text-align: right !important;
+      }
+      span[divider] {
+        display: inline-block;
+        margin: 0 0.5em;
+        color: #c0c0c0;
+      }
+    </style>
+
+    <paper-input-container always-float-label disabled$="[[disabled]]" invalid="[[invalid]]">
+      <label hidden$=[[!label]]>[[label]]</label>
+
+      <div class="input-group paper-input-input">
+        <input
+          id="daysInput"
+          class="f1"
+          is="iron-input"
+          bind-value={{_date_days}}
+          disabled$=[[disabled]]
+          invalid$={{invalid}}
+          prevent-invalid-input=[[preventInvalidInput]]
+          type="text"
+          pattern="^[0-3][0-9]$"
+          required=[[required]]
+          tabindex=[[tabindex]]
+          autofocus=[[autofocus]]
+          placeholder="DD"
+          minlength=2 maxlength=2
+          on-blur="_addLeadingZeros"
+          on-input="_goToNext" />
+        <span divider>/</span>
+        <input
+          class="f1"
+          is="iron-input"
+          bind-value={{_date_months}}
+          disabled$=[[disabled]]
+          invalid$={{invalid}}
+          prevent-invalid-input=[[preventInvalidInput]]
+          type="text"
+          pattern="^[0-1][0-9]$"
+          required=[[required]]
+          tabindex="[[_add(tabindex, 1)]]"
+          placeholder="MM"
+          minlength=2 maxlength=2
+          on-blur="_addLeadingZeros"
+          on-input="_goToNext" />
+        <span divider>/</span>
+        <input
+          class="f2"
+          is="iron-input"
+          bind-value={{_date_years}}
+          disabled$=[[disabled]]
+          invalid$={{invalid}}
+          prevent-invalid-input=[[preventInvalidInput]]
+          type="text"
+          pattern="^\d{4}$"
+          required=[[required]]
+          tabindex="[[_add(tabindex, 2)]]"
+          placeholder="YYYY"
+          minlength=4 maxlength=4
+          on-blur="_addLeadingZeros" />
+      </div>
+
+      <div suffix><paper-icon-button icon="today" on-tap="_launchPicker"></paper-icon-button></div>
+
+      <template is="dom-if" if="[[errorMessage]]">
+        <paper-input-error>[[errorMessage]]</paper-input-error>
+      </template>
+
+      <template is="dom-if" if="[[charCounter]]">
+        <paper-input-char-counter></paper-input-char-counter>
+      </template>
+    </paper-input-container>
+
+    <jv-datepicker-dialog min-date="[[minDate]]" max-date="[[maxDate]]" first-day-of-week="1" id="picker" modal width-backdrop date={{date}} entry-animation="datepicker-slide-from-bottom-animation" exit-animation="datepicker-slide-from-top-animation"></jv-datepicker-dialog>
+  </template>
+  <script>
+    Polymer({
+      is: 'paper-split-date-input',
+      behaviors: [
+        Polymer.IronFormElementBehavior,
+        Polymer.PaperInputBehavior,
+        PaperDatepickerInputBehavior
+      ],
+      properties: {
+        '_date_days': { type: String, value: '' },
+        '_date_months': { type: String, value: '' },
+        '_date_years': { type: String, value: '' },
+        /**
+         * Indicate whether the input should start off blank (ie. showing no value).
+         * The default is to show the current date.
+         */
+        'startBlank': { type: Boolean, value: false }
+      },
+      observers: [
+        '_dateInputsChanged(_date_days, _date_months, _date_years)'
+      ],
+      ready: function() {
+        if (this.startBlank) {
+          this._date_days = ''
+          this._date_months = ''
+          this._date_years = ''
+        }
+        this.addEventListener('input', function(e) {
+          if (this.autoValidate) {
+            this.debounce('auto-validate', this.validate, 100)
+          }
+        })
+      },
+      _dateInputsChanged: function(dd, mm, yyyy) {
+        var di = [yyyy, mm, dd].join('-')
+        var m = moment(di, 'YYYY-MM-DD')
+        if (m.isValid()) {
+          this.date = di
+        }
+      },
+      _dateChanged: function(newDate) {
+        var df = newDate.split('-')
+        this._date_days = df[2]
+        this._date_months = df[1]
+        this._date_years = df[0]
+      },
+      _add: function(a, b) {
+        return a + b
+      },
+      /**
+       * Focuses the first input.
+       */
+      focus: function() {
+        this.$.daysInput.focus()
+      },
+      /**
+       * Validates the inputs and sets an error style if needed.
+       * In addition to validating the underlying inputs,
+       * also checks if the date entered makes sense - ie.
+       * stuff like 31st of February should not be allowed.
+       * @return {boolean}
+       */
+      validate: function() {
+        var isValid = true
+        var inputs = Array.from(Polymer.dom(this.shadyRoot || this.shadowRoot).querySelectorAll('input')).map(function(input) {
+          return input.validate()
+        })
+        if (inputs.length !== inputs.filter(function(x) { return x; }).length) {
+          isValid = false
+        }
+
+        var str = [this._date_years, this._date_months, this._date_days].join('-')
+        var m = moment(str, 'YYYY-MM-DD')
+        if (isValid) isValid = m.isValid()
+        if (isValid) isValid = m.isAfter(moment(this.minDate, 'YYYY-MM-DD')) && m.isBefore(moment(this.maxDate, 'YYYY-MM-DD'))
+        if (isValid) isValid = !!str.match(/^\d{4}-\d{2}-\d{2}$/)
+
+        this.invalid = !isValid
+        return isValid
+      },
+      _addLeadingZeros: function(e) {
+        var input = Polymer.dom(e).localTarget
+        var val = input.bindValue
+        while (val.length < input.minLength) {
+          val = '0' + val
+        }
+        input.bindValue = val
+        if (this.autoValidate) this.validate()
+      },
+      _goToNext: function(e) {
+        var input = Polymer.dom(e).localTarget
+        if (input.bindValue.length >= input.minLength) {
+          var inputs = [].slice.call(Polymer.dom(Polymer.dom(input).parentNode).querySelectorAll('input'))
+          var next = inputs[inputs.indexOf(input) + 1]
+          input.blur()
+          next.focus()
+        }
+      }
+    });
+  </script>
+</dom-module>
