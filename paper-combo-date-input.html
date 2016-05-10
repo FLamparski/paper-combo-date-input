@@ -1,6 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 
 <link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
 
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../paper-input/paper-input-behavior.html">
@@ -9,6 +10,8 @@
 <link rel="import" href="../jv-datepicker/jv-datepicker-dialog.html">
 <link rel="import" href="../jv-datepicker/datepicker-slide-from-bottom-animation.html">
 <link rel="import" href="../jv-datepicker/datepicker-slide-from-top-animation.html">
+
+<link rel="import" href="./paper-datepicker-input-behavior.html">
 
 <!--
 `paper-combo-date-input` puts together a `paper-input` and a `jv-datepicker-dialog`
@@ -25,7 +28,7 @@ to the underlying paper-input:
 
 To get/set the date, use the `date` property. Depends on momentjs.
 
-@demo demo/index.html
+@demo demo/demo-combo.html
 @element paper-combo-date-input
 -->
 <dom-module id="paper-combo-date-input">
@@ -46,32 +49,10 @@ To get/set the date, use the `date` property. Depends on momentjs.
       is: 'paper-combo-date-input',
       behaviors: [
         Polymer.IronFormElementBehavior,
-        Polymer.PaperInputBehavior
+        Polymer.PaperInputBehavior,
+        PaperDatepickerInputBehavior
       ],
       properties: {
-        /**
-         * The selected date. In YYYY-MM-DD.
-         */
-        date: {
-          type: String,
-          value: moment().format('YYYY-MM-DD'),
-          notify: true,
-          observer: '_dateChanged'
-        },
-        /**
-         * Minimum selectable date.
-         */
-        minDate: {
-          type: String,
-          value: '1970-01-01'
-        },
-        /**
-         * Maximum selectable date.
-         */
-        maxDate: {
-          type: String,
-          value: '2070-01-01'
-        },
         /**
          * The pattern used to validate text input. It has to be
          * congruent with the `dateFormat`, otherwise spurious errors
@@ -111,9 +92,6 @@ To get/set the date, use the `date` property. Depends on momentjs.
           this.date = m.format('YYYY-MM-DD')
           this._changing = false
         }
-      },
-      _launchPicker: function() {
-        this.$.picker.open()
       }
     })
   </script>

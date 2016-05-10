@@ -1,0 +1,40 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<script>
+  /**
+   * Provides some common functionality for both
+   * the combo and split paper date pickers
+   */
+  PaperDatepickerInputBehavior = {
+    properties: {
+      /**
+       * The selected date. In YYYY-MM-DD.
+       */
+      date: {
+        type: String,
+        value: moment().format('YYYY-MM-DD'),
+        notify: true,
+        observer: '_dateChanged'
+      },
+      /**
+       * Minimum selectable date.
+       */
+      minDate: {
+        type: String,
+        value: '1970-01-01'
+      },
+      /**
+       * Maximum selectable date.
+       */
+      maxDate: {
+        type: String,
+        value: '2070-01-01'
+      }
+    },
+    _dateChanged: function(newDate) {
+    },
+    _launchPicker: function() {
+      this.$.picker.open()
+    }
+  }
+</script>
