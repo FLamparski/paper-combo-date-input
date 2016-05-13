@@ -51,17 +51,23 @@ To get/set the date, use the `date` property. Depends on momentjs.
       }
       .input-group > .f1 {
         @apply(--layout-flex);
+        min-width: 2em;
       }
       .input-group >.f2 {
         @apply(--layout-flex-2);
+        min-width: 4em;
       }
       .input-group > input {
-        text-align: right !important;
+        text-align: center !important;
       }
       span[divider] {
         display: inline-block;
-        margin: 0 0.5em;
+        margin: 0 0.25em;
         color: #c0c0c0;
+      }
+
+      paper-icon-button {
+        margin-left: 1em;
       }
     </style>
 
@@ -227,6 +233,7 @@ To get/set the date, use the `date` property. Depends on momentjs.
           var inputs = [].slice.call(Polymer.dom(Polymer.dom(input).parentNode).querySelectorAll('input'))
           var next = inputs[inputs.indexOf(input) + 1]
           input.blur()
+          next.setSelectionRange(0, next.bindValue.length)
           next.focus()
         }
       }
