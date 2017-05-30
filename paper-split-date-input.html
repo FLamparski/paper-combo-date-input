@@ -8,15 +8,15 @@
 <link rel="import" href="../paper-input/all-imports.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 
-<link rel="import" href="../jv-datepicker/jv-datepicker-dialog.html">
-<link rel="import" href="../jv-datepicker/datepicker-slide-from-bottom-animation.html">
-<link rel="import" href="../jv-datepicker/datepicker-slide-from-top-animation.html">
+<link rel="import" href="../app-datepicker/app-datepicker-dialog.html">
+<link rel="import" href="../app-datepicker/animations/datepicker-slide-from-bottom-animation.html">
+<link rel="import" href="../app-datepicker/animations/datepicker-slide-from-top-animation.html">
 
 <link rel="import" href="./paper-datepicker-input-behavior.html">
 
 <!--
 `paper-split-date-input` puts together three numerical `paper-input`s and a
-jv-datepicker synced together to provide a seamless date input experience.
+app-datepicker synced together to provide a seamless date input experience.
 
 Quite a lot of this code was ripped off directly from `paper-input`, and the
 element itself should also behave like one.
@@ -136,7 +136,7 @@ To get/set the date, use the `date` property. Depends on momentjs.
       </template>
     </paper-input-container>
 
-    <jv-datepicker-dialog min-date="[[minDate]]" max-date="[[maxDate]]" first-day-of-week="1" id="picker" modal width-backdrop date={{date}} entry-animation="datepicker-slide-from-bottom-animation" exit-animation="datepicker-slide-from-top-animation"></jv-datepicker-dialog>
+    <app-datepicker-dialog format="yyyy-mm-dd" auto-update-date locale=[[locale]] min-date="[[minDate]]" max-date="[[maxDate]]" first-day-of-week=[[startOfWeek]] id="picker" modal width-backdrop date={{date}} entry-animation="datepicker-slide-from-bottom-animation" exit-animation="datepicker-slide-from-top-animation"></jv-datepicker-dialog>
   </template>
   <script>
     Polymer({
