@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+  <title>paper-combo-date-input demo</title>
+  
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../moment/min/moment-with-locales.min.js"></script>
+  <link rel="import" href="../../polymer/polymer.html">
+  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../paper-combo-date-input.html">
+</head>
+<body>
+  <template is="dom-bind">
+    <paper-combo-date-input label="Enter a date" date={{date}}></paper-combo-date-input><br>
+    <span>{{date}}</span>
+  </template>
+</body>
+</html>

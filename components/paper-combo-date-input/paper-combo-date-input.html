@@ -1,0 +1,99 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-input/paper-input-behavior.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+
+<link rel="import" href="../app-datepicker/app-datepicker-dialog.html">
+<link rel="import" href="../app-datepicker/animations/datepicker-slide-from-bottom-animation.html">
+<link rel="import" href="../app-datepicker/animations/datepicker-slide-from-top-animation.html">
+
+<link rel="import" href="./paper-datepicker-input-behavior.html">
+
+<!--
+`paper-combo-date-input` puts together a `paper-input` and a `app-datepicker-dialog`
+from my branch of it, which enables a synchronised date picker + date text input
+combination. It supports many standard paper-input properties by forwarding them
+to the underlying paper-input:
+
+  * `auto-validate`
+  * `pattern`
+  * `error-message`
+  * `required`
+  * `label`
+  * `invalid`
+
+To get/set the date, use the `date` property. Depends on momentjs.
+
+@demo demo/demo-combo.html
+@element paper-combo-date-input
+-->
+<dom-module id="paper-combo-date-input">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <paper-input type="text" id="input" value={{dateHuman}} invalid={{invalid}} auto-validate$=[[autoValidate]] always-float-label pattern="[[pattern]]" error-message="[[errorMessage]]" required$=[[required]] label$="[[label]]" style="margin-top: -16px">
+      <div suffix><paper-icon-button icon="today" on-tap="_launchPicker"></paper-icon-button></div>
+    </paper-input>
+    <app-datepicker-dialog format="yyyy-mm-dd" auto-update-date locale=[[locale]] min-date="[[minDate]]" max-date="[[maxDate]]" first-day-of-week=[[startOfWeek]] id="picker" modal width-backdrop date={{date}}></app-datepicker-dialog>
+  </template>
+  <script>
+    Polymer({
+      is: 'paper-combo-date-input',
+      behaviors: [
+        Polymer.IronFormElementBehavior,
+        Polymer.PaperInputBehavior,
+        PaperDatepickerInputBehavior
+      ],
+      properties: {
+        /**
+         * The pattern used to validate text input. It has to be
+         * congruent with the `dateFormat`, otherwise spurious errors
+         * may occur.
+         */
+        pattern: {
+          type: String,
+          value: '^[0-3][0-9]\/[0-1][0-9]\/[0-9]{4}$'
+        },
+        /**
+         * The default date format for the text input.
+         */
+        dateFormat: {
+          type: String,
+          value: 'DD/MM/YYYY'
+        },
+        /**
+         * The text date in the input.
+         */
+        dateHuman: {
+          type: String,
+          value: moment().format('DD/MM/YYYY'),
+          observer: '_dateHumanChanged'
+        }
+      },
+      _dateChanged: function(newDate) {
+        if (this._changing) return;
+        this._changing = true
+        this.dateHuman = moment(newDate, 'YYYY-MM-DD').format(this.dateFormat || 'DD/MM/YYYY')
+        this._changing = false
+      },
+      _dateHumanChanged: function(newDateHuman) {
+        if (this._changing) return;
+        var m = moment(newDateHuman, this.dateFormat || 'DD/MM/YYYY')
+        if (m.isValid()) {
+          this._changing = true
+          this.$.picker.inputDate = m.format('YYYY/MM/DD')
+          this.date = m.format('YYYY-MM-DD')
+          this._changing = false
+        }
+      }
+    })
+  </script>
+</dom-module>
