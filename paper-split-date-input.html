@@ -176,6 +176,7 @@ To get/set the date, use the `date` property. Depends on momentjs.
         var m = moment(di, 'YYYY-MM-DD')
         if (m.isValid()) {
           this.date = di
+          this.$.picker.inputDate = m.format('YYYY/MM/DD')
         }
       },
       _dateChanged: function(newDate) {
