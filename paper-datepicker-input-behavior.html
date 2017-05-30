@@ -31,6 +31,21 @@
       maxDate: {
         type: String,
         value: '2070-01-01'
+      },
+      /**
+       * Locale (see app-datepicker's docs)
+       */
+      locale: {
+        type: String,
+        value: 'en-US'
+      },
+      /**
+       * What day of the week does the week start on?
+       * (0 - sunday, 1 - monday, ...)
+       */
+      startOfWeek: {
+        type: Number,
+        value: 1
       }
     },
     _dateChanged: function(newDate) {
