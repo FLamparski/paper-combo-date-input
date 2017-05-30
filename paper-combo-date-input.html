@@ -8,8 +8,6 @@
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 
 <link rel="import" href="../app-datepicker/app-datepicker-dialog.html">
-<link rel="import" href="../app-datepicker/animations/datepicker-slide-from-bottom-animation.html">
-<link rel="import" href="../app-datepicker/animations/datepicker-slide-from-top-animation.html">
 
 <link rel="import" href="./paper-datepicker-input-behavior.html">
 
@@ -42,7 +40,7 @@ To get/set the date, use the `date` property. Depends on momentjs.
     <paper-input type="text" id="input" value={{dateHuman}} invalid={{invalid}} auto-validate$=[[autoValidate]] always-float-label pattern="[[pattern]]" error-message="[[errorMessage]]" required$=[[required]] label$="[[label]]" style="margin-top: -16px">
       <div suffix><paper-icon-button icon="today" on-tap="_launchPicker"></paper-icon-button></div>
     </paper-input>
-    <app-datepicker-dialog format="yyyy-mm-dd" auto-update-date locale=[[locale]] min-date="[[minDate]]" max-date="[[maxDate]]" first-day-of-week=[[startOfWeek]] id="picker" modal width-backdrop date={{date}}></app-datepicker-dialog>
+    <app-datepicker-dialog format="yyyy-mm-dd" auto-update-date locale=[[locale]] min-date="[[minDate]]" max-date="[[maxDate]]" first-day-of-week=[[startOfWeek]] id="picker" modal width-backdrop date={{date}} entry-animation=[[entryAnimation]] exit-animation=[[exitAnimation]]></app-datepicker-dialog>
   </template>
   <script>
     Polymer({

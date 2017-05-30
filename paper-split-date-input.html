@@ -136,7 +136,7 @@ To get/set the date, use the `date` property. Depends on momentjs.
       </template>
     </paper-input-container>
 
-    <app-datepicker-dialog format="yyyy-mm-dd" auto-update-date locale=[[locale]] min-date="[[minDate]]" max-date="[[maxDate]]" first-day-of-week=[[startOfWeek]] id="picker" modal width-backdrop date={{date}} entry-animation="datepicker-slide-from-bottom-animation" exit-animation="datepicker-slide-from-top-animation"></jv-datepicker-dialog>
+    <app-datepicker-dialog format="yyyy-mm-dd" auto-update-date locale=[[locale]] min-date="[[minDate]]" max-date="[[maxDate]]" first-day-of-week=[[startOfWeek]] id="picker" modal width-backdrop date={{date}} entry-animation=[[entryAnimation]] exit-animation=[[exitAnimation]]></app-datepicker-dialog>
   </template>
   <script>
     Polymer({

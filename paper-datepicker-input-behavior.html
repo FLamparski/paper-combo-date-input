@@ -46,19 +46,37 @@
       startOfWeek: {
         type: Number,
         value: 1
+      },
+      entryAnimation: {
+        type: String,
+        value: undefined
+      },
+      exitAnimation: {
+        type: String,
+        value: undefined
       }
     },
     _dateChanged: function(newDate) {
     },
     _launchPicker: function() {
-      this._picker.open()
+      this.$.picker.open()
     },
     attached: function() {
-      this._picker = this.$.picker;
-      document.body.appendChild(this._picker);
+      // this._picker = this.$.picker
+      // document.body.appendChild(this._picker)
+      var picker = this.$.picker;
+      var parent = Polymer.dom(picker.parentElement);
+      this._pickerOpenedListener = function(e) {
+        if (picker.opened) {
+          document.body.appendChild(picker);
+        } else {
+          parent.appendChild(picker);
+        }
+      };
+      this.$.picker.addEventListener('opened-changed', this._pickerOpenedListener);
     },
     detached: function() {
-      document.body.removeChild(this._picker);
+      this.$.picker.removeEventListener('opened-changed', this._pickerOpenedListener);
     }
   }
 </script>
