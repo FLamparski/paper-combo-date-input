@@ -36,7 +36,14 @@
     _dateChanged: function(newDate) {
     },
     _launchPicker: function() {
-      this.$.picker.open()
+      this._picker.open()
+    },
+    attached: function() {
+      this._picker = this.$.picker;
+      document.body.appendChild(this._picker);
+    },
+    detached: function() {
+      document.body.removeChild(this._picker);
     }
   }
 </script>
