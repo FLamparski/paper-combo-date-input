@@ -65,7 +65,7 @@
       // this._picker = this.$.picker
       // document.body.appendChild(this._picker)
       var picker = this.$.picker;
-      var parent = Polymer.dom(picker.parentElement);
+      var parent = picker.parentElement === null ? this.shadowRoot : Polymer.dom(picker.parentElement);
       this._pickerOpenedListener = function(e) {
         if (picker.opened) {
           document.body.appendChild(picker);
